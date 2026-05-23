@@ -1,4 +1,10 @@
 package com.example.productimporter.config;
 
-public class ApiProperties {
-}
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+@ConfigurationProperties(prefix = "api")
+public record ApiProperties(
+    String baseUrl,
+    String username,
+    String password
+) {}

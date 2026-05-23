@@ -1,4 +1,9 @@
 package com.example.productimporter.client;
 
-public class AuthClient {
+import com.example.productimporter.dto.LoginRequest;
+import com.example.productimporter.dto.LoginResponse;
+
+public interface AuthClient {
+
+    LoginResponse login(LoginRequest request);
 }

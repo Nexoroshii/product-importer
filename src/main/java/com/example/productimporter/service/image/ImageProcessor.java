@@ -1,4 +1,10 @@
 package com.example.productimporter.service.image;
 
-public class ImageProcessor {
+import java.nio.file.Path;
+
+public interface ImageProcessor {
+
+    Path createBigCrop(Path source);
+
+    Path createSmallCrop(Path source);
 }

@@ -1,4 +1,9 @@
 package com.example.productimporter.client;
 
-public class ImageClient {
+import com.example.productimporter.service.image.dto.UploadImageResponse;
+import java.nio.file.Path;
+
+public interface ImageClient {
+
+    UploadImageResponse upload(Path path);
 }

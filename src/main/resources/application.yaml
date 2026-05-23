@@ -1,3 +1,13 @@
 spring:
   application:
     name: product-importer
+
+api:
+  base-url: https://api-business.click-market.ru
+  username: "${CLICK_USERNAME}"
+  password: "${CLICK_PASSWORD}"
+
+logging:
+  level:
+    root: INFO
+    com.example.productimporter: DEBUG

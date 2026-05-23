@@ -1,4 +1,8 @@
 package com.example.productimporter.auth;
 
-public class TokenStorage {
+public interface TokenStorage {
+
+    String getAccessToken();
+
+    void setAccessToken(String token);
 }

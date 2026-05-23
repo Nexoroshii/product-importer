@@ -1,4 +1,9 @@
 package com.example.productimporter.service.image.dto;
 
-public class UploadImageResponse {
+public record UploadImageResponse(
+
+    String fileName,
+    String url,
+    String fileType
+) {
 }

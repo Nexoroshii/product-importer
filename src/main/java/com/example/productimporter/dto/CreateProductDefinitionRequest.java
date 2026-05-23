@@ -1,11 +1,12 @@
 package com.example.productimporter.dto;
 
+import com.example.productimporter.service.image.dto.ImageDto;
 import java.util.List;
 
-public record CreateProductRequest(
+public record CreateProductDefinitionRequest(
     String name,
     String productNumber,
     String categoryType,
     List<Integer> storeIds,
-    List<ImageRequest> images
+    List<ImageDto> images
 ) {}

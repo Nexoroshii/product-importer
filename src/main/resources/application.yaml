@@ -14,7 +14,7 @@ logging:
 
 images:
   directory: input/images
-  placeholder: no-image.jpg
+  placeholder: input/images/no-image.png
 
 import:
   excel-file: input/missing-products/1.xlsx

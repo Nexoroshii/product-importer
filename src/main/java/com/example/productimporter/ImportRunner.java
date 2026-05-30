@@ -35,7 +35,7 @@ public class ImportRunner implements CommandLineRunner {
 
         //
         enriched.stream()
-            .limit(5)
+//            .limit(5)
             .forEach(item -> {
 
                 ResolvedImage image = imageResolver.resolve(item);
@@ -46,6 +46,13 @@ public class ImportRunner implements CommandLineRunner {
                         + image.source()
                 );
             });
+
+
+
+
+        enriched.stream()
+//            .limit(3)
+            .forEach(productImportService::importProduct);
 
 //        productImportService.importProduct(
 //            "test1234",

@@ -4,6 +4,7 @@ import java.util.List;
 
 public record ImportReport(
     int total,
+    int planned,
     int success,
     int failed,
     int excelImages,

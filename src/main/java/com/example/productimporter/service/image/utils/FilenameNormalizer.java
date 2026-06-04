@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 public class FilenameNormalizer {
 
     public String normalize(String value) {
+        if (value == null) {
+            return "";
+        }
 
         return value
             .toLowerCase()

@@ -15,6 +15,9 @@ public class ProductImageUrlEnricherImpl implements ProductImageUrlEnricher {
 
     @Override
     public List<ProductImportItem> enrich(List<ProductImportItem> items) {
+        if (items == null || items.isEmpty()) {
+            return List.of();
+        }
 
         return items.stream()
             .map(this::enrich)
@@ -22,6 +25,9 @@ public class ProductImageUrlEnricherImpl implements ProductImageUrlEnricher {
     }
 
     private ProductImportItem enrich(ProductImportItem item) {
+        if (item == null) {
+            return null;
+        }
 
         String imageUrl = catalog.findImageUrl(item.name())
             .orElse(null);

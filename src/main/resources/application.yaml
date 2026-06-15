@@ -17,7 +17,7 @@ images:
   placeholder: input/images/no-image.png
 
 import:
-  mode: PREVIEW # PREVIEW/FULL
+  mode: FULL # PREVIEW/FULL
   excel-file: input/missing-products/1.xlsx
   hyperlinks-file: input/hyperlinksfile/1.xlsx
   product-name-column: 1

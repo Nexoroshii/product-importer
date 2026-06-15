@@ -1,7 +1,6 @@
 package com.example.productimporter.service.image.catalog.impl;
 
 import com.example.productimporter.service.image.catalog.ExcelHyperlinkCatalog;
-import com.example.productimporter.service.image.catalog.dto.HyperlinkFileStructure;
 import com.example.productimporter.service.image.utils.FilenameNormalizer;
 import com.example.productimporter.source.config.ImportProperties;
 import jakarta.annotation.PostConstruct;
@@ -25,14 +24,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ExcelHyperlinkCatalogImpl implements ExcelHyperlinkCatalog {
 
-    /**
-     * В твоем файле колонка T.
-     */
-    private static final int IMAGE_COLUMN = 19;
-
-    /**
-     * Пока захардкодим колонку с названием. Потом можем сделать autodetect.
-     */
     @Value("${import.product-name-column}")
     private int productNameColumn;
 
@@ -53,11 +44,10 @@ public class ExcelHyperlinkCatalogImpl implements ExcelHyperlinkCatalog {
                 )) {
             Sheet sheet = workbook.getSheetAt(0);
 
-            HyperlinkFileStructure structure =
-                detect(sheet);
+            int imageColumn = detectImageColumn(sheet);
 
-            log.info("Detected product column: {}, image column: {}", productNameColumn,
-                structure.imageColumn());
+            log.info("Product name column (from config): {}, detected image column: {}",
+                productNameColumn, imageColumn);
 
             for (Row row : sheet) {
 
@@ -73,7 +63,7 @@ public class ExcelHyperlinkCatalogImpl implements ExcelHyperlinkCatalog {
                     continue;
                 }
 
-                Cell imageCell = row.getCell(structure.imageColumn());
+                Cell imageCell = row.getCell(imageColumn);
 
                 if (imageCell == null) {
                     continue;
@@ -137,17 +127,6 @@ public class ExcelHyperlinkCatalogImpl implements ExcelHyperlinkCatalog {
         };
     }
 
-    private HyperlinkFileStructure detect(Sheet sheet) {
-
-        int nameColumn = detectProductColumn(sheet);
-        int imageColumn = detectImageColumn(sheet);
-
-        return new HyperlinkFileStructure(
-            nameColumn,
-            imageColumn
-        );
-    }
-
     private int detectImageColumn(Sheet sheet) {
 
         Map<Integer, Integer> scores = new HashMap<>();
@@ -180,55 +159,5 @@ public class ExcelHyperlinkCatalogImpl implements ExcelHyperlinkCatalog {
             .getKey();
     }
 
-    private int detectProductColumn(Sheet sheet) {
-
-        Map<Integer, Integer> scores = new HashMap<>();
-
-        int rowsToAnalyze =
-            Math.min(sheet.getLastRowNum(), 200);
-
-        for (int rowIndex = 0; rowIndex <= rowsToAnalyze; rowIndex++) {
-
-            Row row = sheet.getRow(rowIndex);
-
-            if (row == null) {
-                continue;
-            }
-            for (Cell cell : row) {
-                String value = getCellValue(cell);
-                if (isProductName(value)) {
-                    scores.merge(
-                        cell.getColumnIndex(),
-                        1,
-                        Integer::sum
-                    );
-                }
-            }
-        }
-
-        return scores.entrySet()
-            .stream()
-            .max(Map.Entry.comparingByValue())
-            .orElseThrow(() ->
-                new IllegalStateException(
-                    "Product column not found"
-                )
-            )
-            .getKey();
-    }
-
-    private boolean isProductName(String value) {
-
-        if (value == null || value.isBlank()) {
-            return false;
-        }
-        if (value.startsWith("http")) {
-            return false;
-        }
-        if (value.startsWith("=")) {
-            return false;
-        }
-        return value.length() > 10;
-    }
 }
 

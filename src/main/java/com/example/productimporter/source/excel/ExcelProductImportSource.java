@@ -55,7 +55,7 @@ public class ExcelProductImportSource implements ProductImportSource {
                     continue;
                 }
 
-                String message = cell.getStringCellValue();
+                String message = getCellStringValue(cell);
 
                 extractProductName(message)
                     .ifPresent(productName ->
@@ -80,6 +80,20 @@ public class ExcelProductImportSource implements ProductImportSource {
                 e
             );
         }
+    }
+
+    private String getCellStringValue(Cell cell) {
+        return switch (cell.getCellType()) {
+            case STRING -> cell.getStringCellValue();
+            case FORMULA -> {
+                try {
+                    yield cell.getStringCellValue();
+                } catch (Exception e) {
+                    yield "";
+                }
+            }
+            default -> "";
+        };
     }
 
     private Optional<String> extractProductName(

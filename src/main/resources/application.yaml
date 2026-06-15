@@ -24,3 +24,10 @@ import:
 
 storage:
   downloads-directory: input/temp_images
+
+ai:
+  image-search:
+    enabled: false                                          # true когда появятся ключи
+    api-key: "${GOOGLE_IMAGE_SEARCH_API_KEY:}"
+    cx: "${GOOGLE_IMAGE_SEARCH_CX:}"
+    max-candidates: 3                                       # сколько URL пробуем скачать

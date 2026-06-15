@@ -10,12 +10,15 @@ import com.example.productimporter.service.image.ProductImageResolver;
 import com.example.productimporter.service.image.dto.ImageDto;
 import com.example.productimporter.service.report.dto.ImportResult;
 import com.example.productimporter.service.report.dto.ImportStatus;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductImportService {
@@ -77,6 +80,11 @@ public class ProductImportService {
 
         } catch (Exception e) {
             return failed(productName, resolvedImage, readableMessage(e));
+        } finally {
+            if (resolvedImage != null
+                && resolvedImage.source() == ImageSource.EXCEL_HYPERLINK) {
+                tryDeleteTempImage(resolvedImage);
+            }
         }
     }
 
@@ -158,6 +166,14 @@ public class ProductImportService {
 
     private boolean isBlank(String value) {
         return value == null || value.isBlank();
+    }
+
+    private void tryDeleteTempImage(ResolvedImage resolvedImage) {
+        try {
+            Files.deleteIfExists(resolvedImage.imagePath());
+        } catch (IOException e) {
+            log.warn("Failed to delete temp downloaded image: {}", resolvedImage.imagePath());
+        }
     }
 
     private String readableMessage(Exception e) {

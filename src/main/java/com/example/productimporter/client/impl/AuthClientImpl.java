@@ -7,6 +7,7 @@ import com.example.productimporter.exception.InvalidCredentialsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -21,12 +22,18 @@ public class AuthClientImpl implements AuthClient {
     @Override
     public LoginResponse login(LoginRequest request) {
         try {
-            return webClient.post()
+            log.debug("Logging in as: {}", request.username());
+            LoginResponse response = webClient.post()
                 .uri("/login")
+                .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(LoginResponse.class)
                 .block();
+            if (response == null) {
+                throw new IllegalStateException("Login response is empty");
+            }
+            return response;
         } catch (WebClientResponseException e) {
 
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {

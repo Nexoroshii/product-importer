@@ -30,7 +30,7 @@ public class ImageClientImpl
             new FileSystemResource(path)
         );
 
-        return webClient.post()
+        UploadImageResponse response = webClient.post()
             .uri("/storage/images")
             .headers(headers ->
                 headers.setBearerAuth(
@@ -48,5 +48,9 @@ public class ImageClientImpl
             .retrieve()
             .bodyToMono(UploadImageResponse.class)
             .block();
+        if (response == null) {
+            throw new IllegalStateException("Upload response is empty for: " + path);
+        }
+        return response;
     }
 }

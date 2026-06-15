@@ -45,7 +45,7 @@ public class ExcelHyperlinkImageProvider implements ImageProvider {
             );
 
         } catch (Exception e) {
-            log.info("error in ExcelHyperlinkImageProvider :", e);
+            log.warn("Failed to download image from hyperlink for product '{}': {}", item.name(), e.getMessage());
             return Optional.empty();
         }
     }

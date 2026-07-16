@@ -5,8 +5,10 @@ import com.example.productimporter.source.ProductImportSource;
 import com.example.productimporter.source.config.ImportProperties;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ public class ExcelProductImportSource implements ProductImportSource {
     public List<ProductImportItem> load() {
 
         List<ProductImportItem> result = new ArrayList<>();
+        Set<String> seenProducts = new LinkedHashSet<>();
 
         try (
             Workbook workbook =
@@ -58,7 +61,10 @@ public class ExcelProductImportSource implements ProductImportSource {
                 String message = cell.getStringCellValue();
 
                 extractProductName(message)
-                    .ifPresent(productName ->
+                    .ifPresent(productName -> {
+                        if (!seenProducts.add(productName.toLowerCase())) {
+                            return;
+                        }
                         result.add(
                             new ProductImportItem(
                                 productName,
@@ -67,8 +73,8 @@ public class ExcelProductImportSource implements ProductImportSource {
                                 18,
                                 null
                             )
-                        )
-                    );
+                        );
+                    });
             }
 
             return result;

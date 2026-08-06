@@ -22,6 +22,17 @@ public class HttpImageDownloader implements ImageDownloader {
     @Override
     public Path download(String url) {
 
+        if (isLocalFile(url)) {
+
+            Path localFile = Path.of(url);
+
+            if (!Files.exists(localFile)) {
+                throw new IllegalStateException("Local image file not found: " + url);
+            }
+
+            return localFile;
+        }
+
         try {
 
             HttpRequest request =
@@ -65,6 +76,13 @@ public class HttpImageDownloader implements ImageDownloader {
                 e
             );
         }
+    }
+
+    private boolean isLocalFile(String reference) {
+
+        String lower = reference.toLowerCase();
+
+        return !lower.startsWith("http://") && !lower.startsWith("https://");
     }
 
     private String extractExtension(String url) {

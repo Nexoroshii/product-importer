@@ -20,7 +20,6 @@ import:
   mode: FULL # PREVIEW/FULL
   excel-file: input/missing-products/1.xlsx
   hyperlinks-file: input/hyperlinksfile/1.xlsx
-  product-name-column: 1
 
 storage:
   downloads-directory: input/temp_images
